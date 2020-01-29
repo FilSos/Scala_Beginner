@@ -1,9 +1,5 @@
 package lectures.part2_oop
 
-import java.nio.BufferUnderflowException
-
-import org.graalvm.compiler.nodes.InvokeWithExceptionNode
-
 object Exeptions extends App {
 
   val x: String = null
