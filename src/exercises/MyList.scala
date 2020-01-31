@@ -188,4 +188,14 @@ case object ListTest extends App {
   println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + "-" + _))
 
   println(listOfIntegers.fold(0)(_ + _))
+
+  val mapResult = for {
+    elem <- listOfIntegers
+  } yield (elem * 2).toString
+  println(mapResult)
+
+  val flatMapResult = for {
+    elem <- listOfIntegers
+  } yield Cons(elem, Cons(elem + 1, Empty)).toString
+  println(flatMapResult)
 }
