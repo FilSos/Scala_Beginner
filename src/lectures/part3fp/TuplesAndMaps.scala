@@ -38,9 +38,65 @@ object TuplesAndMaps extends App {
   //conversions to other collections
   println(phonebook.toList)
   println(List(("Filip", 777)).toMap)
-  val names = List("Bob","James","Jim","Mary","Daniel")
+  val names = List("Bob", "James", "Jim", "Mary", "Daniel")
 
   println(names.groupBy(name => name.charAt(0)))
 
+  //exercises
+  val filipPhonebook = Map("FILIP" -> 444, "Filip" -> 123)
+  println(filipPhonebook.map(pair => pair._1.toLowerCase -> pair._2))
 
+
+  case class Person(name: String, friendsList: Map[String, Person]) {
+
+    def add(socialMedia: Map[String, Person]): Map[String, Person] = {
+      socialMedia + (name -> Person.this)
+      // println(s"Lista osob: $socialMedia")
+      //updatedSocialMedia
+
+    }
+
+    def remove(socialMedia: Map[String, Person]): Unit = {
+      socialMedia + (name -> Person.this)
+    }
+
+    def friend(socialMedia: Map[String, Person], person: Person): Map[String, Person] = {
+      val getPerson = socialMedia(Person.this.name)
+      val personFriendsList = getPerson.friendsList
+      val updatedList = personFriendsList + (person.name -> person)
+      println(s"${Person.this.name} dodał ${person.name} jako przyjaciela. Bieżąca lista przyjaciół: $updatedList")
+      updatedList
+    }
+
+    def unfriend(socialMedia: Map[String, Person], person: Person): Map[String, Person] = {
+      val getPerson = socialMedia(Person.this.name)
+      val personFriendsList = getPerson.friendsList
+      val updatedList = personFriendsList - person.name
+      println(s"${Person.this.name} usunał ${person.name} z listy przyjaciół.Bieżąca lista przyjaciół: $updatedList")
+      updatedList
+    }
+
+    def changeName(newName: String): Person = Person(newName, friendsList)
+
+    def getNumbersOfFriends() = {
+      println(Person.this.friendsList.size)
+    }
+
+  }
+
+  def mostFriends(): Unit = {
+    // println(socialMedia.)
+  }
+
+  val newMap: Map[String, Person] = Map()
+  val newMap2: Map[String, Person] = Map()
+  val ja1 = Person("Filip", newMap)
+  val ja2 = Person("Błażej", newMap2)
+  val previewMap: Map[String, Person] = Map()
+
+  val socialMedia: Map[String, Person] = ja2.add(ja1.add(previewMap))
+  println(socialMedia.size)
+  ja1.friend(socialMedia, ja2)
+  ja1.unfriend(socialMedia, ja2)
+  println(ja1.friendsList)
 }
