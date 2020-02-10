@@ -1,5 +1,7 @@
 package lectures.part3fp
 
+import scala.annotation.tailrec
+
 object TuplesAndMaps extends App {
 
   //tuples = finite orderes "lists"
@@ -47,7 +49,7 @@ object TuplesAndMaps extends App {
   println(filipPhonebook.map(pair => pair._1.toLowerCase -> pair._2))
 
 
-  case class Person(name: String, friendsList: Map[String, Person]) {
+  case class Person(name: String, friendsList: Map[String, Set[String]]) {
 
     def add(socialMedia: Map[String, Person]): Map[String, Person] = {
       socialMedia + (name -> Person.this)
@@ -82,11 +84,38 @@ object TuplesAndMaps extends App {
       println(Person.this.friendsList.size)
     }
 
+    def nFriends(network: Map[String, Person], person: String): Int = {
+      if (!network.contains(person)) 0
+      else network(person).friendsList.size
+    }
+
+    def mostFriends(network: Map[String, Person]): String = {
+      network.maxBy(pair => pair._2.friendsList.size)._1
+    }
+
+    def nPeopleWithNoFriends(network: Map[String, Person]): Int = {
+      network.filterKeys(k => network(k).friendsList.isEmpty).toMap.size
+    }
+  //TODO ogarnac wraz ze zmianami z drugieko komputera
+    def socialConnection(network: Map[String, Person], person: Person): Boolean = {
+      @tailrec
+      def bfs(target: String, consideredPeople: Set[String], discoveredPeople: Set[String]): Boolean = {
+        if (discoveredPeople.isEmpty) false
+        else {
+          val person = discoveredPeople.head
+          if (person == target) true
+          else if (consideredPeople.contains(person)) bfs(target, consideredPeople, discoveredPeople.tail)
+          else bfs(target, consideredPeople + person, discoveredPeople.tail ++ network(person).name)
+        }
+      }
+
+      bfs(person.name, network(Person.this.name) + Person.this.name)
+    }
+
   }
 
-  def mostFriends(): Unit = {
-    // println(socialMedia.)
-  }
+
+
 
   val newMap: Map[String, Person] = Map()
   val newMap2: Map[String, Person] = Map()
@@ -99,4 +128,5 @@ object TuplesAndMaps extends App {
   ja1.friend(socialMedia, ja2)
   ja1.unfriend(socialMedia, ja2)
   println(ja1.friendsList)
+  println(nPeopleWithNoFriends(socialMedia))
 }
