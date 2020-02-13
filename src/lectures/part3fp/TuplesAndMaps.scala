@@ -49,13 +49,11 @@ object TuplesAndMaps extends App {
   println(filipPhonebook.map(pair => pair._1.toLowerCase -> pair._2))
 
 
+  case class Person(name: String, friendsList: Set[String]) {
   case class Person(name: String, friendsList: Map[String, Set[String]]) {
 
     def add(socialMedia: Map[String, Person]): Map[String, Person] = {
       socialMedia + (name -> Person.this)
-      // println(s"Lista osob: $socialMedia")
-      //updatedSocialMedia
-
     }
 
     def remove(socialMedia: Map[String, Person]): Unit = {
@@ -63,18 +61,25 @@ object TuplesAndMaps extends App {
     }
 
     def friend(socialMedia: Map[String, Person], person: Person): Map[String, Person] = {
-      val getPerson = socialMedia(Person.this.name)
-      val personFriendsList = getPerson.friendsList
-      val updatedList = personFriendsList + (person.name -> person)
-      println(s"${Person.this.name} dodał ${person.name} jako przyjaciela. Bieżąca lista przyjaciół: $updatedList")
-      updatedList
+      val getPersonA = socialMedia(Person.this.name)
+      val nameA = getPersonA.name
+      val getPersonB = socialMedia(person.name)
+      val nameB = getPersonB.name
+      val personAFriendsListSet = getPersonA.friendsList
+      val personBFriendsListSet = getPersonB.friendsList
+      val newListASet = personAFriendsListSet + nameB
+      val newListBSet = personBFriendsListSet + nameA
+      //println(s"${Person.this.name} dodał ${person.name} jako przyjaciela. Bieżąca lista przyjaciół ${Person.this.name}: $updatedListA")
+      //println(s"Osoba ${person.name}  również posiada teraz jako przyjaciela osobę o imieniu ${Person.this.name}. Bieżąca lista przyjaciół ${person.name}: $updatedListB")
+      socialMedia + (nameA -> (Person.this + (nameA -> newListASet)))
+
     }
 
     def unfriend(socialMedia: Map[String, Person], person: Person): Map[String, Person] = {
       val getPerson = socialMedia(Person.this.name)
       val personFriendsList = getPerson.friendsList
       val updatedList = personFriendsList - person.name
-      println(s"${Person.this.name} usunał ${person.name} z listy przyjaciół.Bieżąca lista przyjaciół: $updatedList")
+      println(s"${Person.this.name} usunął ${person.name} z listy przyjaciół.Bieżąca lista przyjaciół: $updatedList")
       updatedList
     }
 
@@ -119,14 +124,17 @@ object TuplesAndMaps extends App {
 
   val newMap: Map[String, Person] = Map()
   val newMap2: Map[String, Person] = Map()
-  val ja1 = Person("Filip", newMap)
-  val ja2 = Person("Błażej", newMap2)
+  val osoba1 = Person("Filip", newMap)
+  val osoba2 = Person("Błażej", newMap2)
   val previewMap: Map[String, Person] = Map()
 
-  val socialMedia: Map[String, Person] = ja2.add(ja1.add(previewMap))
+  val socialMedia: Map[String, Person] = osoba2.add(osoba1.add(previewMap))
   println(socialMedia.size)
   ja1.friend(socialMedia, ja2)
   ja1.unfriend(socialMedia, ja2)
   println(ja1.friendsList)
   println(nPeopleWithNoFriends(socialMedia))
+  println("dajesz: " + osoba1.friend(socialMedia, osoba2))
+  osoba1.unfriend(socialMedia, osoba2)
+  println(osoba1.friendsList)
 }
